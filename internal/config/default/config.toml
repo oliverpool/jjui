@@ -7,8 +7,8 @@ limit = 0
   jump_to_children = ["K"]
   jump_to_working_copy = ["@"]
   apply = ["enter"]
-  force_apply = ["alt+enter"]
   cancel = ["esc"]
+  force_apply = ["alt+enter"]
   toggle_select = [" "]
   new = ["n"]
   commit = ["c"]
@@ -36,6 +36,12 @@ limit = 0
   leader = ["\\"]
   suspend = ["ctrl+z"]
   set_parents = ["M"]
+  [keys.revert]
+    mode = ["R"]
+    after = ["a"]
+    before = ["b"]
+    onto = ["d"]
+    insert = ["i"]
   [keys.rebase]
     mode = ["r"]
     revision = ["r"]
@@ -46,12 +52,6 @@ limit = 0
     onto = ["d"]
     insert = ["i"]
     skip_emptied = ["e"]
-  [keys.revert]
-    mode = ["R"]
-    after = ["a"]
-    before = ["b"]
-    onto = ["d"]
-    insert = ["i"]
   [keys.duplicate]
     mode = ["y"]
     after = ["a"]
@@ -67,9 +67,9 @@ limit = 0
     close = ["h"]
     split = ["s"]
     split_parallel = ["alt+s"]
-    squash = ["S"]
     restore = ["r"]
     absorb = ["A"]
+    squash = ["S"]
     diff = ["d"]
     select = ["m", " "]
     revisions_changing_file = ["*"]
@@ -113,13 +113,14 @@ limit = 0
     accept = ["enter"]
     edit = ["alt+e"]
 
-
 [ui]
-  theme = ""
   auto_refresh_interval = 0
+  [ui.theme]
+    dark = ""
+    light = ""
+  [ui.colors]
   [ui.tracer]
     enabled = false
-  [ui.colors]
 
 [suggest]
   [suggest.exec]
@@ -135,8 +136,8 @@ limit = 0
   revision_command = ["show", "--color", "always", "-r", "$change_id"]
   oplog_command = ["op", "show", "$operation_id", "--color", "always"]
   file_command = ["diff", "--color", "always", "-r", "$change_id", "$file"]
-  position = "auto"
   show_at_start = false
+  position = "auto"
   width_percentage = 50.0
   width_increment_percentage = 5.0
 

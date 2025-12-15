@@ -1,8 +1,12 @@
 package config
 
 import (
+	"bytes"
+	"os"
+	"strings"
 	"testing"
 
+	"github.com/BurntSushi/toml"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -75,4 +79,24 @@ complex = { fg = "blue", bg = "white", bold = true }
 	assert.Equal(t, "blue", config.UI.Colors["complex"].Fg)
 	assert.Equal(t, "white", config.UI.Colors["complex"].Bg)
 	assert.True(t, config.UI.Colors["complex"].Bold)
+}
+
+func TestDefault_IsUpToDate(t *testing.T) {
+	var formatted bytes.Buffer
+	assert.NoError(t, toml.NewEncoder(&formatted).Encode(loadDefaultConfig()))
+
+	raw, err := configFS.ReadFile("default/config.toml")
+	assert.NoError(t, err)
+
+	expected := strings.NewReplacer(
+		// the toml library does not support round-tripping with comments
+		// https://github.com/BurntSushi/toml/issues/213
+		`template = ""`, `# template = 'builtin_log_compact' # overrides jj's templates.log`,
+		`revset = ""`, `# revset = "zzzzzzz"               # overrides jj's revsets.log`,
+	).Replace(formatted.String())
+
+	if !assert.Equal(t, expected, string(raw), "The internal/config/default/config.toml does not seem to be up to date\nRun the test with JJUI_TEST_UPDATE=config to update it") && os.Getenv("JJUI_TEST_UPDATE") == "config" {
+		err = os.WriteFile("default/config.toml", []byte(expected), 0o666)
+		assert.NoError(t, err)
+	}
 }
