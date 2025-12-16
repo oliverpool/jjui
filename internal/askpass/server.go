@@ -106,7 +106,8 @@ func (s *Server) smokeTestPeerCred(ln *net.UnixListener) error {
 		if err != nil {
 			return
 		}
-		conn.Close()
+		defer conn.Close()
+		_, _ = conn.Read(make([]byte, 1)) // darwin needs an active connection for peercred
 	}()
 	conn, err := ln.AcceptUnix()
 	if err != nil {
